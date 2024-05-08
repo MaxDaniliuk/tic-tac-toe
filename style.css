@@ -1,0 +1,66 @@
+/* 
+ background color: #00100e
+*/
+
+:root {
+     background-color: #001816;
+     font-size: 16px;
+}
+
+*, ::before, ::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+span, a, p {
+    color: white;
+}
+
+.wrapper {
+    text-align: center;
+    margin-top: 10vh;
+}
+
+.information-display, 
+.information-display > div {
+    margin-bottom: 15px;
+}
+
+.ttt-container {
+    display: grid;
+    grid-template-columns: repeat(3, 75px);
+    grid-template-rows: repeat(3, 75px);
+    justify-content: center;
+    gap: 9px;
+}
+
+.cell {
+    background-color: white;
+}
+
+/* Footer */
+
+.footer {
+    margin-top: auto;
+    
+    display: flex;
+    gap: 0.25rem;
+    font-size: 0.6rem;
+    justify-content: center;
+    align-items: end;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+
