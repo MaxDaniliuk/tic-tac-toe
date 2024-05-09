@@ -1,5 +1,3 @@
-
-
 const gameboard = (function() {
     const board = [
         [' ', ' ', ' '],
@@ -15,7 +13,6 @@ const gameboard = (function() {
         display += `| ${board[1][0]} | ${board[1][1]} | ${board[1][2]} | \n`;
         display += `|---|---|---|\n`;
         display += `| ${board[2][0]} | ${board[2][1]} | ${board[2][2]} | \n`;
-
         console.log(display);
     }
 
@@ -96,9 +93,26 @@ const gameController = (function() {
                  count++;
             }
         }
+        screenController.updateBoard();
     }
 
     return { tickCell, switchPlayerTurn, checkWin, checkTie }
+})();
+
+const screenController = (function() {
+    const markerPlaces = [...document.querySelectorAll('.marker-place')]
+    const board = gameboard.getBoard();
+
+    const updateBoard = () => {
+        
+        ([].concat(...board)).forEach((boardValue, index) => {
+            if (boardValue !== ' ') {
+                markerPlaces[index].textContent = boardValue;
+            } 
+        })
+    };
+
+    return { updateBoard }
 })();
 
 //Runs the game 
@@ -110,7 +124,5 @@ const gameController = (function() {
         }
         gameController.switchPlayerTurn();
     }
-})(); 
-
-
+})()
 
