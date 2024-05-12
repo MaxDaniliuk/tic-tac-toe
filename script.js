@@ -4,7 +4,7 @@ const gameboard = (function() {
         ['', '', ''],
         ['', '', '']
     ];
-    // Used to display the board in console. Won't be required after setting up the DOM.
+
     const displayBoard = (board) => {
         let display = '';
         display += ` ___ ___ ___  \n`;
@@ -40,7 +40,8 @@ const gameController = (function() {
     ];
 
     let activePlayer = players[0];
-
+    const getActivePlayer = () => activePlayer;
+    const resetPlayer = () => activePlayer = players[0];
     const switchPlayerTurn = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
         console.log(`${activePlayer.name}'s turn!`);
@@ -93,14 +94,45 @@ const gameController = (function() {
             }
         }
     }
-    return { tickCell, hasGameFinished }
+
+    const resetGame = () => {
+        gameFinished = false;
+        resetPlayer();
+    }
+
+    return { tickCell, hasGameFinished, checkTie, checkWin, getActivePlayer, resetGame }
 })();
 
 (function() {
-    const cells = document.querySelectorAll('.cell');
+    const cells = [...document.querySelectorAll('.cell')];
+    const buttons = document.querySelectorAll('.button');
+    const gameResultAnnouncement = document.querySelector('.game-result');
+    const markerTurn = document.querySelector('.marker-turn');
+    const gameEndModal = document.querySelector('.game-end-modal')
+    const board = gameboard.getBoard();
+
     const updateBoard = (cellIndex) => {
-        [...cells][cellIndex].textContent = [].concat(...gameboard.getBoard())[cellIndex];
+        cells[cellIndex].textContent = [].concat(...board)[cellIndex];
+        displayTurn();
+        if (gameController.hasGameFinished()) {
+            displayResult();
+        }
     };
+
+    const displayTurn = () => {
+        markerTurn.textContent = gameController.getActivePlayer().marker;
+    }
+    displayTurn();
+
+    const displayResult = () => {
+        if (gameController.checkTie()) {
+            gameResultAnnouncement.textContent = "It's a tie!";
+        }
+        if (gameController.checkWin()) {
+            gameResultAnnouncement.textContent = `The winner is: ${gameController.getActivePlayer().name} !!`;
+        }
+        gameEndModal.showModal();
+    }
 
     const clickHandlerCell = (cellIndex) => (e) => {
         if (!gameController.hasGameFinished()) {
@@ -113,5 +145,29 @@ const gameController = (function() {
 
     cells.forEach((cell, cellIndex) => {
         cell.addEventListener('click', clickHandlerCell(cellIndex))
+    })
+
+    const clickHandlerButton = (e) => {
+        if (e.target.classList.contains("play-again")) {
+            playAgain();
+        }
+    };
+
+    const playAgain = () => {
+        let index = 0;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                board[i][j] = '';
+                cells[index].textContent = '';
+                index++;
+            }
+        }
+        gameController.resetGame();
+        displayTurn();
+        gameEndModal.close(); 
+    } 
+
+    buttons.forEach((button) => {
+        button.addEventListener('click', clickHandlerButton)
     })
 })();
