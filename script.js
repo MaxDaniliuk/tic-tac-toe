@@ -1,68 +1,48 @@
 const gameboard = (function() {
-    const board = [
-        ['', '', ''],
-        ['', '', ''],
-        ['', '', '']
-    ];
+    const board = [];
 
-    const displayBoard = (board) => {
-        let display = '';
-        display += ` ___ ___ ___  \n`;
-        display += `| ${board[0][0]} | ${board[0][1]} | ${board[0][2]} | \n`;
-        display += `|---|---|---| \n`;
-        display += `| ${board[1][0]} | ${board[1][1]} | ${board[1][2]} | \n`;
-        display += `|---|---|---|\n`;
-        display += `| ${board[2][0]} | ${board[2][1]} | ${board[2][2]} | \n`;
-        console.log(display);
-    }
-
-    const getBoard = () => board;
-
-    const clearBoard = () => {
+    const createBoard = () => {
         for (let row = 0; row < 3; row++) {
+            board[row] = [];
             for (let column = 0; column < 3; column++) {
                 board[row][column] = '';
             }
         }
-    }
+    };
+    const getBoard = () => board;
+    createBoard();
 
-    return { getBoard, clearBoard, displayBoard };
-    
+    return { getBoard, createBoard };
 })();
 
 const gameController = (function() {
     const board = gameboard.getBoard();
     let result = null;
     let gameFinished = false;
+    let gameStarted = false;
 
-    const players = [
-        {
-           marker: 'X', 
-        },
-        {
-            marker: '0',
-        }
-    ];
+    const players = [{ marker: 'X' }, { marker: 'O'}];
+
+    const switchMarkers = () => {
+        [players[0]["marker"], players[1]["marker"]] = [players[1]["marker"], players[0]["marker"]];
+        return players;
+    };
 
     let activePlayer = players[0];
     const getActivePlayer = () => activePlayer;
-    const switchPlayerTurn = () => {
-        activePlayer = activePlayer === players[0] ? players[1] : players[0];
-        console.log(`${activePlayer.marker}'s turn!`);
-    }
+    const switchPlayerTurn = () => { activePlayer = activePlayer === players[0] ? players[1] : players[0] };
 
     const hasGameFinished = () => gameFinished;
+    const hasGameStarted = () => gameStarted;
     const getResult = () => result;
 
     const checkTie = () => {
-        const oneDimensionalBoard = [].concat(...board);
-        const numOfEmptyCells = oneDimensionalBoard.filter((emptyString) => (emptyString === '')).length;
+        const numOfEmptyCells = [].concat(...board).filter((emptyString) => (emptyString === '')).length;
         if (numOfEmptyCells === 0) {
-            console.log(`It's a tie!`)
             return true;
         }
         return false;
-    }
+    };
 
     const checkWin = () => {
         if ((board[0][0] !== '' && board[0][0] === board[0][1] && board[0][1] === board[0][2]) || 
@@ -74,26 +54,20 @@ const gameController = (function() {
             (board[0][0] !== '' && board[0][0] === board[1][1] && board[1][1] === board[2][2]) || 
             (board[0][2] !== '' && board[0][2] === board[1][1] && board[1][1] === board[2][0])
         ) { 
-            console.log(`${activePlayer.marker} won!!!`)
             return true;
         }
         return false;
-    }
+    };
 
-    const tickCell = (cellIndex) => { 
+    const playRound = (cellIndex) => {
+        gameStarted = true; 
         let indexTracker = 0;
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 if (indexTracker === cellIndex) {
                     board[i][j] = activePlayer.marker;
-                    gameboard.displayBoard(board);
-                    if (checkTie()) {
-                        result = "It's a tie!";
-                        gameFinished = true;
-                        return
-                    }
-                    if (checkWin()) {
-                        result = `The winner is\n${getActivePlayer().marker}`;
+                    if (checkWin() || checkTie()) {
+                        result = checkWin() ? `The winner is\n${getActivePlayer().marker}` : "It's a tie!";
                         gameFinished = true;
                         return;
                     }
@@ -103,16 +77,16 @@ const gameController = (function() {
                  indexTracker ++;
             }
         }
-    } 
+    }; 
 
     const resetGame = () => {
-        gameboard.clearBoard();
+        gameboard.createBoard();
         result = null;
-        gameFinished = false;
+        [gameFinished, gameStarted] = [false, false];
         activePlayer = players[0];
-    }
+    };
 
-    return { tickCell, getActivePlayer, hasGameFinished, getResult, resetGame }
+    return { playRound, getActivePlayer, hasGameFinished, getResult, resetGame, switchMarkers, hasGameStarted };
 })();
 
 (function() {
@@ -127,9 +101,10 @@ const gameController = (function() {
             this.cells = document.querySelectorAll('.cell');
             this.buttons = document.querySelectorAll('.button');
             this.turn = document.querySelector('.turn');
-            this.dialogs = document.querySelectorAll('dialog');
             this.resultAnnouncementDialog = document.querySelector('.game-end-modal');
-
+            this.gameResult = document.querySelector('.game-result');
+            this.playerOne = document.querySelector('.player-one');
+            this.playerTwo = document.querySelector('.player-two');
         },
         bindEvents: function() {
             this.cells.forEach((cell, cellIndex) => {
@@ -137,31 +112,29 @@ const gameController = (function() {
             })
             this.buttons.forEach(button => {
                 button.addEventListener('click', this.identifyButton.bind(this))
-                // Buttons should: 1. Close the dialog; 2. Not dialog related buttons
-                // 3. And later may open the dialog.
             })
         },
-
         identifyButton: function(e) {
             if (e.target.parentNode.classList.contains("modal-wrapper")) {
-                this.dialogs.forEach(dialog => {
-                    this.clearScreen();
-                    dialog.close();
-                })
-                //buttons that are inside a dialog
+                this.clearScreen();
+                this.resultAnnouncementDialog.close();
+            } else {
+                if (!gameController.hasGameStarted()) {
+                    const players = gameController.switchMarkers();
+                    this.switchPlayers(players);
+                    this.displayTurn();
+                }
             }
-            //Otherwise you are dealing with other button not in the dialog
         },
         markCell: function(cellIndex, e) {
             if (e.target.textContent === '') {
                 e.target.textContent = gameController.getActivePlayer().marker;
-                gameController.tickCell(cellIndex);
+                gameController.playRound(cellIndex);
                 this.displayTurn();
             }
             if (gameController.hasGameFinished()) {
                 this.resultAnnouncementDialog.showModal();
                 this.displayResult();
-                
             }
         },
         displayTurn: function() {
@@ -169,14 +142,15 @@ const gameController = (function() {
             this.turn.textContent = mark;
         },
         displayResult: function() {
-            document.querySelector('.game-result').textContent = gameController.getResult();
+            this.gameResult.textContent = gameController.getResult();
         },
-
+        switchPlayers: function(players) {
+            this.playerOne.textContent = players[0]["marker"];
+            this.playerTwo.textContent = players[1]["marker"];
+        },
         clearScreen: function() {
             gameController.resetGame();
-            this.cells.forEach(cell => {
-                cell.textContent = '';
-            })
+            this.cells.forEach(cell => cell.textContent = '')
             this.displayTurn();
         }
     }
