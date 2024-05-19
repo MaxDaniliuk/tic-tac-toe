@@ -10,11 +10,11 @@
     <div class="wrapper">
         <div class="information-display">
             <div>
-                <button class="player-one">Player One</button>
-                <span>vs</span>
-                <button class="player-two">Player Two</button>
+                <span class="player-name player-one">X</span>
+                <span class="vs">vs</span>
+                <span class=" player-name player-two">O</span>
             </div>
-            <p><span class="marker-turn"></span>Turn</p>
+            <button class="button change-marker"><span class="turn"></span>Turn</button>
         </div>
         <div class="ttt-container">
             <div class="cell"></div>
@@ -32,7 +32,16 @@
         <span>Copyright &copy; <script>document.write(new Date().getFullYear())</script></span><span>Created by</span>
         <a href="https://github.com/MaxDaniliuk/personal-library" target="_blank">MaxDaniliuk</a>
     </div>
+    <dialog class="modal game-end-modal">
+        <div class="modal-wrapper">
+            <div>
+                <p class="game-result">The winner is X</p>
+                <p class="winner"></p>
+            </div> 
+            <button class="button play-again">Play again!</button>
+        </div>
+    </dialog>
 
-    <!-- <script src="script.js"></script> --> 
+    <script src="script.js"></script>
 </body>
 </html>
