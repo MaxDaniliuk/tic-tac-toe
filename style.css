@@ -1,10 +1,7 @@
-/* 
- background color: #00100e
-*/
-
 :root {
      background-color: #001816;
      font-size: 16px;
+     font-family: Arial, Helvetica, sans-serif;
 }
 
 *, ::before, ::after {
@@ -20,9 +17,7 @@ body {
     justify-content: center;
 }
 
-span, a, p {
-    color: white;
-}
+/* Wrapper */
 
 .wrapper {
     text-align: center;
@@ -34,22 +29,89 @@ span, a, p {
     margin-bottom: 15px;
 }
 
+.vs, .player-name, .turn {
+    display: inline-block;
+    width: 2ch;
+    
+}
+
+.vs {
+    margin-left: 8px;
+    margin-right: 8px;
+    font-size: 1.75rem;
+    color: #e8e8e8;
+}
+
+.player-name {
+    font-size: 2.25rem;
+}
+
+.player-one {
+    color: gold;
+}
+
+.player-two {
+    color: #ff0059;
+}
+
+/* Board */
+
 .ttt-container {
     display: grid;
     grid-template-columns: repeat(3, 75px);
     grid-template-rows: repeat(3, 75px);
     justify-content: center;
-    gap: 9px;
+    gap: 14px;
 }
 
 .cell {
-    background-color: white;
+    background-color: #005149;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: black;
+    font-size: 3rem;
+    font-weight: 700;
+    border-radius: 10px;
+
+    -webkit-box-shadow: 2px 2px 5px 2px #00302c;
+    -moz-box-shadow: 2px 2px 5px 2px #00302c;
+    box-shadow: 2px 2px 5px 2px #00302c;
+}
+
+button {
+    outline: none;
+    transition: all 0.2s linear;
+}
+
+.change-marker {
+    background-color: #001816;
+    border: solid 1px #001816;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.change-marker:hover {
+    border-color: #e8e8e8;
+}
+
+.change-marker, 
+.turn {
+    color: #e8e8e8;
+    font-size: 1rem;
+}
+
+.turn,
+.winner {
+    font-weight: 700;
 }
 
 /* Footer */
 
 .footer {
     margin-top: auto;
+    margin-bottom: 5px;
     
     display: flex;
     gap: 0.25rem;
@@ -62,5 +124,298 @@ a {
     text-decoration: none;
 }
 
+span, a {
+    color: #e8e8e8
+}
 
+/* Modal */
 
+.modal {
+    margin: auto;
+    margin-top: 18vh;
+    min-width: 150px;
+    height: fit-content;
+    background-color: #001816;
+    border: none;
+}
+
+.modal-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-wrapper div {
+    margin: 15px 10px 10px 10px;
+}
+
+.game-result, 
+.winner {
+    text-align: center;
+    color: #e8e8e8;
+}
+
+.game-result {
+    font-size: 2rem;
+    margin-bottom: 27px;
+}
+
+.winner {
+    font-size: 3rem;
+}
+
+.play-again {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 7px;
+    border-radius: 7px;
+    font-size: 1.5rem;
+    background-color: #001816;
+    border: solid 1px #001816;
+    color: #e8e8e8; 
+}
+
+.play-again:hover {
+    border-color: #e8e8e8;
+}
+
+.modal::backdrop {
+    background-color: #000000D9;
+}
+
+/* Media queries */
+
+@media only screen and (min-width: 600px) {
+    .vs {
+        font-size: 1.80rem;
+    }
+
+    .player-name {
+        font-size: 2.30rem;
+    }
+
+    .ttt-container {
+        grid-template-columns: repeat(3, 80px);
+        grid-template-rows: repeat(3, 80px);
+        gap: 16px;
+
+        font-size: 3.1rem;
+    }
+
+    .cell {
+        font-size: 3.05rem;
+    }
+
+    .change-marker,
+    .turn {
+        font-size: 1.1rem;
+    }
+
+    .footer {
+        font-size: 0.7rem;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .vs {
+        font-size: 1.90rem;
+    }
+
+    .player-name {
+        font-size: 2.40rem;
+    }
+
+    .ttt-container {
+        grid-template-columns: repeat(3, 90px);
+        grid-template-rows: repeat(3, 90px);
+        gap: 18px;
+
+        font-size: 3.2rem;
+    }
+
+    .cell {
+        font-size: 3.20rem;
+    }
+
+    .change-marker,
+    .turn {
+        font-size: 1.2rem;
+    }
+
+    .footer {
+        font-size: 0.8rem;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .vs {
+        font-size: 2.1rem;
+    }
+
+    .player-name {
+        font-size: 2.60rem;
+    }
+
+    .ttt-container {
+        grid-template-columns: repeat(3, 110px);
+        grid-template-rows: repeat(3, 110px);
+        gap: 22px;
+
+        font-size: 3.4rem;
+    }
+
+    .cell {
+        font-size: 3.5rem;
+    }
+
+    .change-marker,
+    .turn {
+        font-size: 1.4rem;
+    }
+
+    .footer {
+        font-size: 0.90rem;
+    }
+
+    .modal {
+        min-width: 200px;
+    }
+
+    .game-result {
+        font-size: 2.5rem;
+    }
+
+    .winner {
+        font-size: 3.5rem;
+    }
+
+    .play-again {
+        font-size: 2rem;
+    }
+}
+
+@media only screen and (min-width: 1280px) {
+    .vs {
+        font-size: 2.3rem;
+    }
+
+    .player-name {
+        font-size: 2.80rem;
+    }
+
+    .ttt-container {
+        grid-template-columns: repeat(3, 130px);
+        grid-template-rows: repeat(3, 130px);
+        gap: 25px;
+
+        font-size: 3.6rem;
+    }
+
+    .cell {
+        font-size: 4rem;
+    }
+
+    .change-marker,
+    .turn {
+        font-size: 1.6rem;
+    }
+
+    .footer {
+        font-size: 1.0rem;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    .vs {
+        font-size: calc(2.3rem / 0.66);
+    }
+
+    .player-name {
+        font-size: calc(2.80rem / 0.66);
+    }
+
+    .ttt-container {
+        grid-template-columns: repeat(3, 185px);
+        grid-template-rows: repeat(3, 185px);
+        gap: 35px;
+
+        font-size: calc(3.6rem / 0.66);
+    }
+
+    .cell { 
+        font-size: 6rem;
+    }
+
+    .change-marker,
+    .turn {
+        font-size: calc(1.6rem / 0.66);
+    }
+
+    .footer {
+        font-size: 1.4rem;
+    }
+
+    .modal {
+        min-width: 400px;
+    }
+
+    .game-result {
+        font-size: 6rem;
+    }
+    
+    .winner {
+        font-size: 9rem;
+    }
+
+    .play-again {
+        font-size: 3rem;
+    }
+}
+
+@media screen and (min-width: 3840px) {
+    .vs {
+        font-size: calc(2.3rem * 2);
+    }
+
+    .player-name {
+        font-size: calc(2.80rem * 2);
+    }
+
+    .ttt-container {
+        grid-template-columns: repeat(3, 400px);
+        grid-template-rows: repeat(3, 400px);
+        gap: 70px;
+
+        font-size: calc(3.6rem * 2);
+    }
+
+    .cell {
+        font-size: calc(5rem * 2);
+    }
+
+    .change-marker,
+    .turn {
+        font-size: calc(1.6rem * 2);
+    }
+
+    .footer {
+        font-size: 3rem;
+    }
+
+    .modal {
+        min-width: 600px;
+    }
+
+    .game-result {
+        font-size: 9rem;
+    }
+    
+    .winner {
+        font-size: 12rem;
+    }
+
+    .play-again {
+        font-size: 6rem;
+    }
+}
