@@ -67,7 +67,7 @@ const gameController = (function() {
                 if (indexTracker === cellIndex) {
                     board[i][j] = activePlayer.marker;
                     if (checkWin() || checkTie()) {
-                        result = checkWin() ? `The winner is\n${getActivePlayer().marker}` : "It's a tie!";
+                        result = checkWin() ? "The winner is" : "It's a tie!";
                         gameFinished = true;
                         return;
                     }
@@ -103,6 +103,7 @@ const gameController = (function() {
             this.turn = document.querySelector('.turn');
             this.resultAnnouncementDialog = document.querySelector('.game-end-modal');
             this.gameResult = document.querySelector('.game-result');
+            this.winner = document.querySelector('.winner');
             this.playerOne = document.querySelector('.player-one');
             this.playerTwo = document.querySelector('.player-two');
         },
@@ -129,6 +130,7 @@ const gameController = (function() {
         markCell: function(cellIndex, e) {
             if (e.target.textContent === '') {
                 e.target.textContent = gameController.getActivePlayer().marker;
+                e.target.style.color = e.target.textContent === 'X' ? 'gold' : '#ff0059';
                 gameController.playRound(cellIndex);
                 this.displayTurn();
             }
@@ -138,20 +140,32 @@ const gameController = (function() {
             }
         },
         displayTurn: function() {
-            const mark = `${gameController.getActivePlayer().marker} `;
-            this.turn.textContent = mark;
+            this.setMarker(this.turn);
         },
         displayResult: function() {
             this.gameResult.textContent = gameController.getResult();
+            this.setMarker(this.winner);
+        },
+        setMarker: function(element){
+            const mark = `${gameController.getActivePlayer().marker}`;
+            element.textContent = mark;
+            element.style.color = mark === 'X' ? 'gold' : '#ff0059';
         },
         switchPlayers: function(players) {
             this.playerOne.textContent = players[0]["marker"];
             this.playerTwo.textContent = players[1]["marker"];
+            if (players[0]["marker"] === 'O') {
+                this.playerOne.style.color = '#ff0059';
+                this.playerTwo.style.color = 'gold';
+            } else {
+                this.playerOne.style.color = 'gold';
+                this.playerTwo.style.color = '#ff0059';
+            }
         },
         clearScreen: function() {
             gameController.resetGame();
             this.cells.forEach(cell => cell.textContent = '')
-            this.displayTurn();
+            this.displayTurn();  
         }
     }
 
